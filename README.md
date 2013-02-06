@@ -1,10 +1,7 @@
 ambient-adventures
 ==================
 
-Location and movement based generative music app.
+Tests in mobile music generativity.
 
-Currently mockups being implemented in RTcmix~ with Max/MSP for eventual port to iOS (using iRTcmix).
-
-powerGables
-stairWayward
-uvasIrae
+Example:
+http://www.columbia.edu/~dds2135/tilt.html
