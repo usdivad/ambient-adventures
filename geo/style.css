@@ -1,0 +1,24 @@
+﻿html {
+	background-color: #66CCFF;
+	font: 100% "Tahoma", sans-serif;
+}
+
+head, body {
+	margin-left:auto;
+	margin-right:auto;
+	height: 700px;
+	width: 500px;
+	background-color: #33CC33;
+	text-align: center;
+	border-radius: 15px;
+}
+
+div.text {
+	margin-left:auto;
+	margin-right:auto;
+	width: 160px;
+	text-align: center;
+	background-color: #C2A385;
+	border-radius: 10px;
+	padding: 5px;
+}

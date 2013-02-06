@@ -1,0 +1,172 @@
+﻿<html>
+<head>
+<title>tilt your device to play</title>
+<h1>tilt your device to play</h1>
+<i>click "play" button to start</i><br><br><br>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="text">
+<b>AUDIO PLAYBACK</b><br>
+<input type="Button"  style="margin:4px; height: 30px; width: 60px" value="play" onClick="play();">
+<input type="Button"  style="margin:4px; height: 30px; width: 50px" value="pause" onClick="pause();">
+</div>
+<br>
+<div class="text">
+<b>geolocation</b><br>
+<div id="latitude_display">latitude: nope</div>
+<div id="longitude_display">longitude: nope</div>
+<!--<input type="Button" value="Start" onClick="start();">
+<input type="Button" value="Stop" onClick="stop();">-->
+<div id="num_watches"></div>
+</div>
+<br>
+<div class="text">
+<b>orientation</b><br>
+<div id="alpha_display">alpha: nope</div>
+<div id="beta_display">beta: nope</div>
+<div id="gamma_display">gamma: nope</div>
+<div id="num_rotations"></div>
+</div>
+
+<!-- using master volume gain to adjust (doesn't work because mobile safari requires user input to begin
+<input type="Button" value="play" onClick="masterVolume.gain.value=1;">
+<input type="Button" value="pause" onClick="masterVolume.gain.value=0;">
+-->
+<br><br>
+alpha controls basic filtering and rate<br>
+beta controls melodic guide tones (A7sus4-ey vs. Fmaj9-ish)<br>
+gamma controls crossfade level (between the two synths)<br><br>
+<script type="text/javascript" charset="UTF-8" src="audio.js"></script>
+
+<script type="text/javascript">
+var latitude
+var longitude
+//var accuracy
+var watch_id
+var watches=0
+
+var alpha
+var beta
+var gamma
+var rotations=0
+
+var beats_per_minute = 40
+var tempo = 1
+
+
+//begin handling geolocation
+/*TODO: generate melody based on coordinates; easy to uniquely map in that case. Maybe do something like Per Norgard's infinity series with intervals*/
+watch_id = navigator.geolocation.watchPosition(
+										success_handler)
+										
+//setup orientation detection										
+if (window.DeviceOrientationEvent) {
+	window.addEventListener("deviceorientation", function(evt){
+			alpha = event.alpha
+			beta = event.beta
+			gamma = event.gamma
+			rotations++
+			
+			if (masterVolume.gain.value==1) {
+				document.getElementById("alpha_display").innerHTML = "alpha: "+alpha
+				document.getElementById("beta_display").innerHTML = "beta: "+beta
+				document.getElementById("gamma_display").innerHTML = "gamma: "+gamma	
+				document.getElementById("num_rotations").innerHTML = "number of rotations: "+rotations		
+			}
+			//gamma:crossfade
+			if (gamma!=null) {
+			g1.gain.value = scale(gamma, 90, 1)*1.5
+			g2.gain.value = Math.pow(0.1*(1-g1.gain.value),0.5)/2 //reverse
+			}
+			
+			//beta:filter
+			/*if (beta!=null) {
+			eq1.frequency.value = scale(beta, 180, 2000)
+			eq2.frequency.value = scale(beta, 180, 12)*scale(beta, 180,12) //reverse
+			}*/
+			
+			//beta:melody
+			if (beta!=null) {
+				if (beta>0)
+					melody1 = [57,62,64,57,69,57,62,64,67,55]
+				else
+					melody1 = [53,60,64,62,67,53,60,59,60]
+			}
+			
+			//alpha:tempo
+			/*if (alpha!=null) {
+			tempo = scale(180-alpha, 180, 10);
+			}*/
+			
+			//alpha: filter + tempo
+			if (alpha!=null) {
+				eq1.frequency.value = scale(beta, 180, 2000)+ 300
+				eq2.frequency.value = scale(beta, 180, 12)*scale(beta, 180,12) //reverse
+				
+				if (alpha>180)
+					tempo = 4
+				else
+					tempo = 8
+			}
+			
+			
+			
+			/*
+			if (Math.abs(gamma) < 120) {
+				g1.type = 0
+			}
+			*/
+		}, true)
+}
+
+//begin audio playback
+/*
+playNote(osc1, melody1, beats_per_minute)
+playNote(osc2a, melody1, beats_per_minute)
+*/
+
+//masterVolume.gain.value=0;
+
+function success_handler(position) {
+	latitude = position.coords.latitude
+	longitude = position.coords.longitude
+	watches++
+	
+	document.getElementById("latitude_display").innerHTML = "latitude: "+latitude
+	document.getElementById("longitude_display").innerHTML = "longitude: "+longitude
+	document.getElementById("num_watches").innerHTML = "number of watches: "+watches
+}
+
+//scale a value x in xRange to yRange. both only encompass natural nums
+function scale(x, xRange, yRange) {
+	return (Math.abs(x)/xRange)*yRange;
+}
+
+function play() {
+	masterVolume.gain.value=1;
+	stopAll();
+	playNote(osc1, melody1, beats_per_minute)
+	playNote(osc2a, melody1, beats_per_minute)
+}
+
+function pause() {
+	masterVolume.gain.value=0;
+	stopAll();
+}
+
+
+
+//start/stop buttons for location tracking
+/*function start() {
+	watch_id = navigator.geolocation.watchPosition(
+										success_handler)
+}
+
+function stop() {
+	navigator.geolocation.clearWatch(watch_id)
+}*/
+</script>
+</body>
+</html>
