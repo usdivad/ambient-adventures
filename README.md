@@ -1,4 +1,4 @@
 ambient-adventures
 ==================
 
-Tests in mobile music generativity.
+Tests in ambient music generativity.
