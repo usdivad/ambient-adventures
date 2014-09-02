@@ -36,13 +36,12 @@ function ptom(p, base_arr) {
     var len = base_arr.length;
 
     if (n < 0) {
-       if (Math.abs(n) > len) {
-        return base_arr[len+n] - 12 * (Math.floor(len/n)+1);
-       }
-       else {
-        return base_arr[len+n] - 12; //octave down
-       } 
+        return base_arr[len+n] - 12 * (Math.floor(len/Math.abs(n))+1);
     }
+    else {
+        return base_arr[n] + 12 * (Math.floor(len/Math.abs(n))+1);
+    }
+
 
 
 
