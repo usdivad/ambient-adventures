@@ -8,11 +8,11 @@ var p2 = [1, 3, 5, 3, 5, 6, 5, 7, 6, 5, 3];
 var p3 = [1, 3, 1, 3, 5, 6, 5, 7, 6, 5, -2, 3];
 var p4 = [1, 1, 1, 1, 1];
 
-var b1 = [60, 62, 63, 65, 67, 68, 70, 72];
+//scale arrs
+var s1 = [60, 62, 63, 65, 67, 68, 70, 72];
 
 //osc
 var osc1 = T("konami");
-//osc1.freq.value = ptom(p1, b1);
 osc1.play();
 
 //glob
@@ -23,45 +23,41 @@ var interval = (60/bpm) * 1000;
 window.setInterval(function(){
     var p_idx = Math.floor(Math.random()*p1.length);
     var p = p1[p_idx];
-    var m = ptom(p, b1);
+    var m = ptom(p, s1);
     var f = mtof(m);
     osc1.freq.value = f;
     console.log("p="+p+", m="+m+", f="+f);
 }, interval);
 
 //pitch to midi num
-function ptom(p, base_arr) {
+function ptom(pitch, scale_arr) {
     //var offset = p;
-    var n = p-1;
-    var len = base_arr.length;
+    var n = pitch-1; //because pitch_arr starts at 1 not 0
+    var len = scale_arr.length;
 
-    if (n < 0) {
-        return base_arr[len+n] - 12 * (Math.floor(len/Math.abs(n))+1);
+    //check if it's positive or negative, then its octave offset from the scale array
+    if (pitch < 0) {
+       if (Math.abs(n) > len) {
+        return scale_arr[len+n] - 12 * (Math.floor(len/n)+1);
+       }
+       else {
+        return scale_arr[len+n] - 12; //octave down
+       } 
     }
     else {
-        return base_arr[n] + 12 * (Math.floor(len/Math.abs(n))+1);
-    }
-
-
-
-
-    if (p < 0) {
-        offset = base_arr.length + p;
-    }
-
-    if (offset < base_arr.length) {
-        return base_arr[offset];
-    }
-    else {
-        if ()
-        //return base_arr[base_arr.length-1]; //invalid index
+       if (Math.abs(n) > len) {
+        return scale_arr[n-len] + 12 * (Math.floor(len/n)+1);
+       }
+       else {
+        return scale_arr[n];
+       } 
     }
 }
 
 //midi num to freq (hz)
-function mtof(m) {
-    var a = 440; //a is 440hz
-    return (a/32) * (Math.pow(2, ((m-9)/12)));
+function mtof(midi) {
+    var a440 = 440; //a is 440hz
+    return (a440/32) * (Math.pow(2, ((midi-9)/12)));
 }
 
 })();
