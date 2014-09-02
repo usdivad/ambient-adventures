@@ -11,8 +11,19 @@ var b1 = [60, 62, 63, 65, 67, 68, 70, 72];
 
 //osc
 var osc1 = T("konami");
-osc1.freq = ptom(p1, b1);
-osc1.start();
+//osc1.freq.value = ptom(p1, b1);
+var m1 = ptom(p1, b1); //has to be converted to frequencies! right now is Midi number
+osc1.play();
+
+//glob
+var bpm = 120;
+var interval = (60/bpm) * 1000;
+
+window.setInterval(function(){
+    var m_idx = Math.floor(Math.random()*m1.length);
+    osc1.freq.value = m1[m_idx];
+    console.log(m1[m_idx]);
+}, interval);
 
 //pitch to midi num
 function ptom(p_arr, base_arr) {
@@ -21,6 +32,7 @@ function ptom(p_arr, base_arr) {
         var p = p_arr[i];
         m_arr.push(calc_midi(p, base_arr));
     }
+    console.log(m_arr);
     return m_arr;
 }
 
