@@ -1,4 +1,4 @@
-//(function() {
+(function() {
 console.log("glass");
 
 //pitch arrs (relative; can have any starting note)   
@@ -19,10 +19,13 @@ osc1.play();
 var bpm = 120;
 var interval = (60/bpm) * 1000;
 
+//timer
 window.setInterval(function(){
     var m_idx = Math.floor(Math.random()*m1.length);
+    var m = m1[m_idx];
+    var f = mtof(m)
     osc1.freq.value = m1[m_idx];
-    console.log(m1[m_idx]);
+    console.log("m="+m+", f="+f);
 }, interval);
 
 //pitch to midi num
@@ -51,4 +54,10 @@ function calc_midi(p, base_arr) {
     }
 }
 
-//})();
+//midi num to freq (hz)
+function mtof(m) {
+    var a = 440; //a is 440hz
+    return (a/32) * (Math.pow(2, ((m-9)/12)));
+}
+
+})();
